@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CS2 Case Opening</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .loading-spinner {
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top: 3px solid #fff;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: none;
+        }
+
+        .case-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .case {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+
+        .case.opening {
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .case img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+
+        .inventory {
+            margin-top: 30px;
+        }
+
+        .inventory h2 {
+            color: #4CAF50;
+        }
+
+        .inventory-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .skin-item {
+            background: #2a2a2a;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .skin-item img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .balance {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .modal img {
+            max-width: 300px;
+            margin: 20px 0;
+        }
+
+        .rarity-legendary { color: #FFD700; }
+        .rarity-epic { color: #9B59B6; }
+        .rarity-rare { color: #3498DB; }
+        .rarity-common { color: #95A5A6; }
+    </style>
+</head>
+<body>
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <p>Загрузка...</p>
+    </div>
+
+    <div class="container" id="container">
+        <h1>CS2 Case Opening</h1>
+        
+        <div class="case-container">
+            <div class="case" id="case">
+                <img src="https://i.imgur.com/8YhB6jA.png" alt="Case">
+            </div>
+            <button id="openCase">Открыть кейс (100₽)</button>
+        </div>
+
+        <div class="inventory">
+            <h2>Ваш инвентарь:</h2>
+            <div id="inventory"></div>
+        </div>
+
+        <div class="balance">
+            <h2>Баланс: <span id="balance">1000</span>₽</h2>
+        </div>
+    </div>
+
+    <div id="winModal" class="modal">
+        <div class="modal-content">
+            <h2>Поздравляем!</h2>
+            <img id="winImage" src="" alt="">
+            <p id="winText"></p>
+            <button onclick="closeModal()">Забрать</button>
+        </div>
+    </div>
+
+    <script>
+        // Инициализация после загрузки страницы
+        window.addEventListener('load', function() {
+            // Проверяем, что мы в Telegram
+            if (window.Telegram && window.Telegram.WebApp) {
+                const tg = window.Telegram.WebApp;
+                
+                // Устанавливаем цвет темы
+                tg.setHeaderColor('#1a1a1a');
+                tg.setBackgroundColor('#1a1a1a');
+                
+                // Расширяем приложение на весь экран
+                tg.expand();
+                
+                // Скрываем загрузчик и показываем контент
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('container').style.display = 'block';
+                
+                // База данных скинов
+                const skins = [
+                    { name: "AK-47 | Redline", rarity: "Red", price: 1500, image: "https://i.imgur.com/XJh5g9W.png" },
+                    { name: "AWP | Dragon Lore", rarity: "Legendary", price: 50000, image: "https://i.imgur.com/8YhB6jA.png" },
+                    { name: "Glock-18 | Water Elemental", rarity: "Blue", price: 500, image: "https://i.imgur.com/5r2Y9mS.png" },
+                    { name: "M4A4 | Howl", rarity: "Legendary", price: 45000, image: "https://i.imgur.com/2K4Lm9V.png" },
+                    { name: "Karambit | Fade", rarity: "Legendary", price: 35000, image: "https://i.imgur.com/7Jm6nKp.png" },
+                    { name: "USP-S | Kill Confirmed", rarity: "Pink", price: 8000, image: "https://i.imgur.com/9Lm8nKp.png" },
+                    { name: "Desert Eagle | Blaze", rarity: "Pink", price: 6000, image: "https://i.imgur.com/3Km6nKp.png" },
+                    { name: "AK-47 | Vulcan", rarity: "Red", price: 12000, image: "https://i.imgur.com/4Km6nKp.png" },
+                    { name: "Glock-18 | Fade", rarity: "Pink", price: 7000, image: "https://i.imgur.com/6Km6nKp.png" },
+                    { name: "M4A1-S | Hyper Beast", rarity: "Purple", price: 3000, image: "https://i.imgur.com/1Km6nKp.png" }
+                ];
+
+                let balance = 1000;
+                let inventory = [];
+                let isOpening = false;
+
+                // Обновление баланса
+                function updateBalance() {
+                    document.getElementById('balance').textContent = balance;
+                }
+
+                // Обновление инвентаря
+                function updateInventory() {
+                    const inventoryDiv = document.getElementById('inventory');
+                    inventoryDiv.innerHTML = '';
+                    
+                    inventory.forEach(skin => {
+                        const skinDiv = document.createElement('div');
+                        skinDiv.className = 'skin-item';
+                        const rarityClass = `rarity-${skin.rarity.toLowerCase()}`;
+                        skinDiv.innerHTML = `
+                            <img src="${skin.image}" alt="${skin.name}">
+                            <p class="${rarityClass}">${skin.name}</p>
+                            <p>${skin.rarity}</p>
+                            <p>${skin.price}₽</p>
+                            <button onclick="withdrawSkin(${skin.id})">Вывести в Steam</button>
+                        `;
+                        inventoryDiv.appendChild(skinDiv);
+                    });
+                }
+
+                // Показать модальное окно с выигрышем
+                function showWinModal(skin) {
+                    const modal = document.getElementById('winModal');
+                    const winImage = document.getElementById('winImage');
+                    const winText = document.getElementById('winText');
+                    
+                    winImage.src = skin.image;
+                    winText.innerHTML = `
+                        Вы получили: ${skin.name}<br>
+                        Редкость: ${skin.rarity}<br>
+                        Цена: ${skin.price}₽
+                    `;
+                    
+                    modal.style.display = 'block';
+                }
+
+                // Закрыть модальное окно
+                function closeModal() {
+                    document.getElementById('winModal').style.display = 'none';
+                }
+
+                // Открытие кейса
+                document.getElementById('openCase').addEventListener('click', async function() {
+                    if (isOpening) return;
+                    
+                    if (balance < 100) {
+                        tg.showAlert('Недостаточно средств!');
+                        return;
+                    }
+
+                    isOpening = true;
+                    const button = this;
+                    button.disabled = true;
+                    const caseElement = document.getElementById('case');
+                    caseElement.classList.add('opening');
+
+                    // Имитация открытия кейса
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+
+                    // Выбор случайного скина
+                    const randomSkin = skins[Math.floor(Math.random() * skins.length)];
+                    randomSkin.id = Date.now(); // Уникальный ID для скина
+                    inventory.push(randomSkin);
+                    
+                    balance -= 100;
+                    updateBalance();
+                    updateInventory();
+
+                    caseElement.classList.remove('opening');
+                    button.disabled = false;
+                    isOpening = false;
+
+                    showWinModal(randomSkin);
+                });
+
+                // Вывод скина в Steam
+                function withdrawSkin(skinId) {
+                    const skin = inventory.find(s => s.id === skinId);
+                    if (skin) {
+                        tg.showPopup({
+                            title: 'Вывод скина',
+                            message: `Для вывода скина ${skin.name} в Steam, пожалуйста, свяжитесь с администратором @admin_username`,
+                            buttons: [{
+                                text: 'OK'
+                            }]
+                        });
+                    }
+                }
+
+                // Инициализация
+                updateBalance();
+                updateInventory();
+            } else {
+                // Если не в Telegram, показываем сообщение об ошибке
+                document.getElementById('loading').innerHTML = '<p>Пожалуйста, откройте это приложение в Telegram</p>';
+            }
+        });
+    </script>
+</body>
+</html>
