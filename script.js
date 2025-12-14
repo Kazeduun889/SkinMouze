@@ -8,22 +8,22 @@ const casesData = {
         name: "Стартовый кейс",
         price: 100,
         items: [
-            { name: "AK-47 | Redline", price: 150, rarity: "rare", image: "https://picsum.photos/seed/ak47redline/150/150.jpg" },
-            { name: "AWP | Dragon Lore", price: 500, rarity: "legendary", image: "https://picsum.photos/seed/awpdragon/150/150.jpg" },
-            { name: "Glock-18 | Water Elemental", price: 80, rarity: "common", image: "https://picsum.photos/seed/glockwater/150/150.jpg" },
-            { name: "USP-S | Kill Confirmed", price: 120, rarity: "rare", image: "https://picsum.photos/seed/uspkill/150/150.jpg" },
-            { name: "Knife | Fade", price: 300, rarity: "epic", image: "https://picsum.photos/seed/knifefade/150/150.jpg" }
+            { name: "AK-47 | Redline", price: 150, rarity: "rare", image: "https://picsum.photos/seed/ak47redline/200/200.jpg" },
+            { name: "AWP | Dragon Lore", price: 500, rarity: "legendary", image: "https://picsum.photos/seed/awpdragon/200/200.jpg" },
+            { name: "Glock-18 | Water Elemental", price: 80, rarity: "common", image: "https://picsum.photos/seed/glockwater/200/200.jpg" },
+            { name: "USP-S | Kill Confirmed", price: 120, rarity: "rare", image: "https://picsum.photos/seed/uspkill/200/200.jpg" },
+            { name: "Knife | Fade", price: 300, rarity: "epic", image: "https://picsum.photos/seed/knifefade/200/200.jpg" }
         ]
     },
     2: {
         name: "Премиум кейс",
         price: 250,
         items: [
-            { name: "AK-47 | Fire Serpent", price: 400, rarity: "epic", image: "https://picsum.photos/seed/ak47fire/150/150.jpg" },
-            { name: "AWP | Medusa", price: 800, rarity: "legendary", image: "https://picsum.photos/seed/awpmedusa/150/150.jpg" },
-            { name: "Desert Eagle | Blaze", price: 200, rarity: "rare", image: "https://picsum.photos/seed/deagleblaze/150/150.jpg" },
-            { name: "M4A4 | Howl", price: 600, rarity: "legendary", image: "https://picsum.photos/seed/m4howl/150/150.jpg" },
-            { name: "Knife | Doppler", price: 450, rarity: "epic", image: "https://picsum.photos/seed/knifedoppler/150/150.jpg" }
+            { name: "AK-47 | Fire Serpent", price: 400, rarity: "epic", image: "https://picsum.photos/seed/ak47fire/200/200.jpg" },
+            { name: "AWP | Medusa", price: 800, rarity: "legendary", image: "https://picsum.photos/seed/awpmedusa/200/200.jpg" },
+            { name: "Desert Eagle | Blaze", price: 200, rarity: "rare", image: "https://picsum.photos/seed/deagleblaze/200/200.jpg" },
+            { name: "M4A4 | Howl", price: 600, rarity: "legendary", image: "https://picsum.photos/seed/m4howl/200/200.jpg" },
+            { name: "Knife | Doppler", price: 450, rarity: "epic", image: "https://picsum.photos/seed/knifedoppler/200/200.jpg" }
         ]
     }
 };
@@ -169,14 +169,27 @@ updateBalance(0);
 
 // Настройка Telegram Web App
 tg.ready();
-tg.MainButton.text = 'Пополнить баланс';
-tg.MainButton.color = '#2a5298';
-tg.MainButton.textColor = '#ffffff';
-tg.MainButton.isVisible = true;
+tg.MainButton.isVisible = false; // Скрываем главную кнопку
 
-// Обработчик нажатия на главную кнопку Telegram
-Telegram.WebApp.onEvent('mainButtonClicked', function() {
-    showNotification('Функция пополнения баланса будет добавлена в следующем обновлении!');
+// Обработчики для навигации
+document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', function() {
+        // Убираем активный класс у всех элементов
+        document.querySelectorAll('.nav-item').forEach(navItem => {
+            navItem.classList.remove('active');
+        });
+
+        // Добавляем активный класс текущему элементу
+        this.classList.add('active');
+
+        // Получаем целевую страницу
+        const targetPage = this.dataset.page;
+
+        // Показываем уведомление о том, что страница в разработке
+        if (targetPage !== 'cases') {
+            showNotification(`Раздел "${this.querySelector('.nav-text').textContent}" находится в разработке!`);
+        }
+    });
 });
 
 // Устанавливаем цвет заголовка в Telegram

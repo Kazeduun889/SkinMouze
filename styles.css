@@ -16,6 +16,7 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    padding-bottom: 70px; /* Место для нижней навигации */
 }
 
 /* Заголовок приложения */
@@ -143,6 +144,7 @@ body {
     object-fit: cover;
     transition: transform 0.3s ease;
     filter: brightness(0.9);
+    display: block;
 }
 
 .case-card[data-case-id="1"] .case-image::after {
@@ -265,6 +267,7 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
 }
 
 .item-name {
@@ -293,6 +296,68 @@ body {
 
 .continue-button:hover {
     background: linear-gradient(90deg, #ff6348, #fe9a5b);
+}
+
+/* Нижняя панель навигации */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.6);
+    transition: color 0.3s ease;
+    cursor: pointer;
+    padding: 5px;
+    width: 25%;
+}
+
+.nav-item.active {
+    color: #ff7e5f;
+}
+
+.nav-icon {
+    font-size: 20px;
+    margin-bottom: 3px;
+}
+
+.nav-text {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* Стили для страниц (кроме кейсов) */
+.page {
+    display: none;
+    padding: 20px;
+    width: 100%;
+}
+
+.page.active {
+    display: block;
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 /* Адаптивность */
