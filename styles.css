@@ -51,6 +51,13 @@ body {
 .balance-icon {
     margin-right: 5px;
     font-size: 18px;
+    color: #ffd700;
+}
+
+.icon-coins::before {
+    content: "51e";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
 }
 
 .balance-amount {
@@ -86,6 +93,25 @@ body {
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.case-card::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #ff7e5f, #feb47b, #ff7e5f);
+    border-radius: 15px;
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.3s ease;
+}
+
+.case-card:hover::before {
+    opacity: 0.7;
 }
 
 .case-card:hover {
@@ -96,6 +122,19 @@ body {
 .case-image {
     height: 200px;
     overflow: hidden;
+    position: relative;
+    border-radius: 15px 15px 0 0;
+}
+
+.case-image::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(30, 60, 114, 0.7) 0%, rgba(42, 82, 152, 0.7) 100%);
+    z-index: 1;
 }
 
 .case-image img {
@@ -103,6 +142,35 @@ body {
     height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease;
+    filter: brightness(0.9);
+}
+
+.case-card[data-case-id="1"] .case-image::after {
+    content: "START";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 36px;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    z-index: 2;
+    letter-spacing: 3px;
+}
+
+.case-card[data-case-id="2"] .case-image::after {
+    content: "PREMIUM";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 32px;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    z-index: 2;
+    letter-spacing: 2px;
 }
 
 .case-card:hover .case-image img {

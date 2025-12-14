@@ -8,11 +8,11 @@ const casesData = {
         name: "Стартовый кейс",
         price: 100,
         items: [
-            { name: "AK-47 | Redline", price: 150, rarity: "rare", image: "https://picsum.photos/seed/ak47/150/150.jpg" },
-            { name: "AWP | Dragon Lore", price: 500, rarity: "legendary", image: "https://picsum.photos/seed/awp/150/150.jpg" },
-            { name: "Glock-18 | Water Elemental", price: 80, rarity: "common", image: "https://picsum.photos/seed/glock/150/150.jpg" },
-            { name: "USP-S | Kill Confirmed", price: 120, rarity: "rare", image: "https://picsum.photos/seed/usp/150/150.jpg" },
-            { name: "Knife | Fade", price: 300, rarity: "epic", image: "https://picsum.photos/seed/knife/150/150.jpg" }
+            { name: "AK-47 | Redline", price: 150, rarity: "rare", image: "https://picsum.photos/seed/ak47redline/150/150.jpg" },
+            { name: "AWP | Dragon Lore", price: 500, rarity: "legendary", image: "https://picsum.photos/seed/awpdragon/150/150.jpg" },
+            { name: "Glock-18 | Water Elemental", price: 80, rarity: "common", image: "https://picsum.photos/seed/glockwater/150/150.jpg" },
+            { name: "USP-S | Kill Confirmed", price: 120, rarity: "rare", image: "https://picsum.photos/seed/uspkill/150/150.jpg" },
+            { name: "Knife | Fade", price: 300, rarity: "epic", image: "https://picsum.photos/seed/knifefade/150/150.jpg" }
         ]
     },
     2: {
@@ -20,10 +20,10 @@ const casesData = {
         price: 250,
         items: [
             { name: "AK-47 | Fire Serpent", price: 400, rarity: "epic", image: "https://picsum.photos/seed/ak47fire/150/150.jpg" },
-            { name: "AWP | Medusa", price: 800, rarity: "legendary", image: "https://picsum.photos/seed/awpmed/150/150.jpg" },
-            { name: "Desert Eagle | Blaze", price: 200, rarity: "rare", image: "https://picsum.photos/seed/deagle/150/150.jpg" },
+            { name: "AWP | Medusa", price: 800, rarity: "legendary", image: "https://picsum.photos/seed/awpmedusa/150/150.jpg" },
+            { name: "Desert Eagle | Blaze", price: 200, rarity: "rare", image: "https://picsum.photos/seed/deagleblaze/150/150.jpg" },
             { name: "M4A4 | Howl", price: 600, rarity: "legendary", image: "https://picsum.photos/seed/m4howl/150/150.jpg" },
-            { name: "Knife | Doppler", price: 450, rarity: "epic", image: "https://picsum.photos/seed/knifedop/150/150.jpg" }
+            { name: "Knife | Doppler", price: 450, rarity: "epic", image: "https://picsum.photos/seed/knifedoppler/150/150.jpg" }
         ]
     }
 };
@@ -181,3 +181,6 @@ Telegram.WebApp.onEvent('mainButtonClicked', function() {
 
 // Устанавливаем цвет заголовка в Telegram
 tg.setHeaderColor('#1e3c72');
+
+// Устанавливаем заголовок в Telegram
+tg.setHeaderColor('SkinMouze - Открытие кейсов');
